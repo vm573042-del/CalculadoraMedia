@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Média Escolar - 3 Trimestres</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Nativo Personalizado -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #030712;
+            color: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+
+        /* Cabeçalho */
+        .header {
+            background: linear-gradient(to right, #059669, #0d9488);
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .header p {
+            font-size: 0.875rem;
+            color: #ccfbf1;
+            margin-top: 0.25rem;
+        }
+
+        /* Corpo */
+        .body-content {
+            padding: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .body-content {
+                padding: 2rem;
+            }
+        }
+
+        /* Configurações */
+        .config-box {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            background-color: rgba(3, 7, 18, 0.5);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(30, 41, 59, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .config-box {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 0.375rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .input-group select, 
+        .input-group input {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 0.625rem 0.75rem;
+            font-size: 0.875rem;
+            color: #f8fafc;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group select:focus, 
+        .input-group input:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Sessão de Trimestres */
+        .section-title {
+            font-size: 0.813rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .trimestres-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .trimestre-card {
+            background-color: rgba(3, 7, 18, 0.3);
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(30, 41, 59, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .trimestre-info {
+            flex: 1;
+        }
+
+        .trimestre-info span.title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            display: block;
+        }
+
+        .peso-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.125rem;
+            display: inline-block;
+        }
+
+        .peso-label.hidden {
+            display: none;
+        }
+
+        .peso-input {
+            width: 3rem;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 0.25rem;
+            padding: 0.125rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #f8fafc;
+            margin-left: 0.25rem;
+        }
+
+        .trimestre-input-wrapper {
+            width: 7rem;
+        }
+
+        .trimestre-input-wrapper input {
+            width: 100%;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #f8fafc;
+            outline: none;
+        }
+
+        .trimestre-input-wrapper input:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Botões */
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-calcular {
+            flex: 1;
+            background-color: #059669;
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.2);
+        }
+
+        .btn-calcular:hover {
+            background-color: #047857;
+        }
+
+        .btn-calcular:active {
+            transform: scale(0.98);
+        }
+
+        .btn-limpar {
+            background-color: #1e293b;
+            color: #cbd5e1;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-limpar:hover {
+            background-color: #334155;
+        }
+
+        /* Resultado */
+        .resultado-container {
+            margin-top: 1.5rem;
+            border-top: 1px solid #1e293b;
+            padding-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .resultado-container.hidden {
+            display: none;
+        }
+
+        .resultado-card {
+            background-color: rgba(3, 7, 18, 0.6);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(30, 41, 59, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .resultado-card span.label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+        }
+
+        .resultado-card .valor {
+            font-size: 1.875rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 0.25rem;
+        }
+
+        .badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-aprovado {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-reprovado {
+            background-color: rgba(244, 63, 94, 0.2);
+            color: #fb7185;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .mensagem-recuperacao {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            background-color: rgba(3, 7, 18, 0.4);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(30, 41, 59, 0.5);
+        }
+
+        .mensagem-recuperacao.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Cabeçalho -->
+        <div class="header">
+            <h1>Calculadora de Média Escolar</h1>
+            <p>Calcule sua média dos três trimestres facilmente</p>
+        </div>
+
+        <!-- Corpo do Aplicativo -->
+        <div class="body-content">
+
+            <!-- Configurações -->
+            <div class="config-box">
+                <div class="input-group">
+                    <label for="tipoMedia">Tipo de Média</label>
+                    <select id="tipoMedia" onchange="alternarTipoMedia()">
+                        <option value="aritmetica">Aritmética (Simples)</option>
+                        <option value="ponderada">Ponderada (Com Pesos)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="mediaCorte">Média de Aprovação</label>
+                    <input type="number" id="mediaCorte" value="6.0" min="0" max="10" step="0.1">
+                </div>
+            </div>
+
+            <h2 class="section-title">Notas dos Trimestres</h2>
+
+            <!-- Entradas de Notas por Trimestre -->
+            <div class="trimestres-container">
+                <!-- 1º Trimestre -->
+                <div class="trimestre-card">
+                    <div class="trimestre-info">
+                        <span class="title">1º Trimestre</span>
+                        <span class="peso-label hidden">Peso: <input type="number" id="peso1" value="1" min="0.1" step="0.1" class="peso-input"></span>
+                    </div>
+                    <div class="trimestre-input-wrapper">
+                        <input type="number" id="trimestre1" placeholder="0.0 a 10" min="0" max="10" step="0.1">
+                    </div>
+                </div>
+
+                <!-- 2º Trimestre -->
+                <div class="trimestre-card">
+                    <div class="trimestre-info">
+                        <span class="title">2º Trimestre</span>
+                        <span class="peso-label hidden">Peso: <input type="number" id="peso2" value="1" min="0.1" step="0.1" class="peso-input"></span>
+                    </div>
+                    <div class="trimestre-input-wrapper">
+                        <input type="number" id="trimestre2" placeholder="0.0 a 10" min="0" max="10" step="0.1">
+                    </div>
+                </div>
+
+                <!-- 3º Trimestre -->
+                <div class="trimestre-card">
+                    <div class="trimestre-info">
+                        <span class="title">3º Trimestre</span>
+                        <span class="peso-label hidden">Peso: <input type="number" id="peso3" value="2" min="0.1" step="0.1" class="peso-input"></span>
+                    </div>
+                    <div class="trimestre-input-wrapper">
+                        <input type="number" id="trimestre3" placeholder="0.0 a 10" min="0" max="10" step="0.1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="actions">
+                <button onclick="calcularMedia()" class="btn-calcular">Calcular Média</button>
+                <button onclick="limparCampos()" class="btn-limpar">Limpar</button>
+            </div>
+
+            <!-- Painel de Resultados -->
+            <div id="resultadoContainer" class="resultado-container hidden">
+                <div class="resultado-card">
+                    <div>
+                        <span class="label">Média Final</span>
+                        <div class="valor" id="valorMedia">0.0</div>
+                    </div>
+                    <div id="badgeStatus" class="badge">
+                        -
+                    </div>
+                </div>
+
+                <div id="mensagemRecuperacao" class="mensagem-recuperacao hidden">
+                    <!-- Dinâmico para nota de recuperação -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function alternarTipoMedia() {
+            const tipo = document.getElementById('tipoMedia').value;
+            const pesosLabels = document.querySelectorAll('.peso-label');
+            
+            if (tipo === 'ponderada') {
+                pesosLabels.forEach(el => el.classList.remove('hidden'));
+            } else {
+                pesosLabels.forEach(el => el.classList.add('hidden'));
+            }
+        }
+
+        function calcularMedia() {
+            const t1 = parseFloat(document.getElementById('trimestre1').value);
+            const t2 = parseFloat(document.getElementById('trimestre2').value);
+            const t3 = parseFloat(document.getElementById('trimestre3').value);
+            const mediaCorte = parseFloat(document.getElementById('mediaCorte').value) || 6.0;
+            const tipo = document.getElementById('tipoMedia').value;
+
+            // Validação básica
+            if (isNaN(t1) || isNaN(t2) || isNaN(t3)) {
+                alert("Por favor, preencha as notas de todos os três trimestres.");
+                return;
+            }
+
+            if (t1 < 0 || t1 > 10 || t2 < 0 || t2 > 10 || t3 < 0 || t3 > 10) {
+                alert("As notas devem estar entre 0.0 e 10.0.");
+                return;
+            }
+
+            let mediaFinal = 0;
+
+            if (tipo === 'aritmetica') {
+                mediaFinal = (t1 + t2 + t3) / 3;
+            } else {
+                const p1 = parseFloat(document.getElementById('peso1').value) || 1;
+                const p2 = parseFloat(document.getElementById('peso2').value) || 1;
+                const p3 = parseFloat(document.getElementById('peso3').value) || 2;
+
+                const somaNotas = (t1 * p1) + (t2 * p2) + (t3 * p3);
+                const somaPesos = p1 + p2 + p3;
+                mediaFinal = somaNotas / somaPesos;
+            }
+
+            // Exibir resultados
+            const container = document.getElementById('resultadoContainer');
+            const elValor = document.getElementById('valorMedia');
+            const elBadge = document.getElementById('badgeStatus');
+            const elMsgRec = document.getElementById('mensagemRecuperacao');
+
+            container.classList.remove('hidden');
+            elValor.textContent = mediaFinal.toFixed(2);
+
+            // Regras de Aprovação
+            if (mediaFinal >= mediaCorte) {
+                elBadge.textContent = "Aprovado(a)";
+                elBadge.className = "badge badge-aprovado";
+                elMsgRec.classList.add('hidden');
+            } else {
+                elBadge.textContent = "Recuperação";
+                elBadge.className = "badge badge-reprovado";
+                
+                let notaRec = (mediaCorte * 2) - mediaFinal;
+                notaRec = notaRec > 10 ? 10 : (notaRec < 0 ? 0 : notaRec);
+                
+                elMsgRec.classList.remove('hidden');
+                elMsgRec.innerHTML = `⚠️ Você ficou abaixo da média. Para ser aprovado na recuperação, precisará tirar pelo menos <strong style="color: #f8fafc;">${notaRec.toFixed(1)}</strong>.`;
+            }
+        }
+
+        function limparCampos() {
+            document.getElementById('trimestre1').value = '';
+            document.getElementById('trimestre2').value = '';
+            document.getElementById('trimestre3').value = '';
+            document.getElementById('resultadoContainer').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
